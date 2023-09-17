@@ -10,6 +10,7 @@ class Todo {
 
   final String title;
   final bool isDone;
+
   Todo({
     this.id = 0,
     required this.title,
@@ -27,16 +28,6 @@ class Todo {
       isDone: isDone ?? this.isDone,
     );
   }
-
-  @override
-  bool operator ==(covariant Todo other) {
-    if (identical(this, other)) return true;
-
-    return other.id == id && other.title == title && other.isDone == isDone;
-  }
-
-  @override
-  int get hashCode => id.hashCode ^ title.hashCode ^ isDone.hashCode;
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -61,4 +52,14 @@ class Todo {
 
   @override
   String toString() => 'Todo(id: $id, title: $title, isDone: $isDone)';
+
+  @override
+  bool operator ==(covariant Todo other) {
+    if (identical(this, other)) return true;
+
+    return other.id == id && other.title == title && other.isDone == isDone;
+  }
+
+  @override
+  int get hashCode => id.hashCode ^ title.hashCode ^ isDone.hashCode;
 }
