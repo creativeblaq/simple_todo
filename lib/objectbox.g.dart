@@ -20,25 +20,30 @@ export 'package:objectbox/objectbox.dart'; // so that callers only have to impor
 
 final _entities = <ModelEntity>[
   ModelEntity(
-      id: const IdUid(1, 918976198454352027),
+      id: const IdUid(1, 6299514845817015769),
       name: 'Todo',
-      lastPropertyId: const IdUid(3, 4513269297690195256),
+      lastPropertyId: const IdUid(4, 2088910986951364303),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
-            id: const IdUid(1, 5124354050063597062),
+            id: const IdUid(1, 746067250137793664),
             name: 'id',
             type: 6,
             flags: 1),
         ModelProperty(
-            id: const IdUid(2, 8842687250695196552),
+            id: const IdUid(2, 7226742329123730794),
             name: 'title',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(3, 4513269297690195256),
+            id: const IdUid(3, 3275834998682722830),
             name: 'isDone',
             type: 1,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(4, 2088910986951364303),
+            name: 'priority',
+            type: 9,
             flags: 0)
       ],
       relations: <ModelRelation>[],
@@ -72,7 +77,7 @@ Future<Store> openStore(
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(1, 918976198454352027),
+      lastEntityId: const IdUid(1, 6299514845817015769),
       lastIndexId: const IdUid(0, 0),
       lastRelationId: const IdUid(0, 0),
       lastSequenceId: const IdUid(0, 0),
@@ -95,10 +100,12 @@ ModelDefinition getObjectBoxModel() {
         },
         objectToFB: (Todo object, fb.Builder fbb) {
           final titleOffset = fbb.writeString(object.title);
-          fbb.startTable(4);
+          final priorityOffset = fbb.writeString(object.priority);
+          fbb.startTable(5);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, titleOffset);
           fbb.addBool(2, object.isDone);
+          fbb.addOffset(3, priorityOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -111,8 +118,13 @@ ModelDefinition getObjectBoxModel() {
               .vTableGet(buffer, rootOffset, 6, '');
           final isDoneParam =
               const fb.BoolReader().vTableGet(buffer, rootOffset, 8, false);
-          final object =
-              Todo(id: idParam, title: titleParam, isDone: isDoneParam);
+          final priorityParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 10, '');
+          final object = Todo(
+              id: idParam,
+              title: titleParam,
+              isDone: isDoneParam,
+              priority: priorityParam);
 
           return object;
         })
@@ -131,4 +143,7 @@ class Todo_ {
 
   /// see [Todo.isDone]
   static final isDone = QueryBooleanProperty<Todo>(_entities[0].properties[2]);
+
+  /// see [Todo.priority]
+  static final priority = QueryStringProperty<Todo>(_entities[0].properties[3]);
 }
